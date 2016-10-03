@@ -1,0 +1,134 @@
+﻿<!DOCTYPE html>
+
+<html>
+
+<head>
+  <title>Face Tool</title>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+  <!-- arquivos de javascript -->
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js" type="text/javascript" charset="UTF-8"></script>
+  <script src="https://cdn.jsdelivr.net/lodash/4.16.2/lodash.min.js" type="text/javascript" charset="UTF-8"></script>
+</head>
+
+
+<style>
+.charles {
+  color: red;
+  font-weight: bold;
+}
+</style>
+
+<script>
+
+angular.module('app', []);
+angular.module("app").controller("FaceController", function($scope, $http){
+  $scope.ordenar = '2';
+  $scope.totalLikes = true;
+  $scope.idObjeto = '1211135765625146'; 
+  $scope.posts = [];
+  $scope.limit = 20;
+  $scope.viewLimit = 20;
+  $scope.token = 'EAACEdEose0cBACAZAolplNxqQe50teupeg3VH5wY36F2CANckz0TfUnVlL5eBszjCWSZBZA2NZBera0NMfcazwGDTCSlfMkKRlTZBYqUUsiTaabgXjTDpQZB0ZBqJoxtsW7Up80jQoQNZAAlZANyZAYSKS0LZCJCdxDvb1hI66yp9ZBp5AZDZD';
+  
+  $scope.order = function(){
+    var url = 'https://graph.facebook.com/' + $scope.idObjeto + '/comments?fields=message,from{name},like_count';
+ if ($scope.ordenar == '1') {
+  url = url + '&order=chronological';
+ }
+ url = url + '&limit=5000&access_token=' + $scope.token;
+    $http.get(url).success(function(response){
+      $scope.posts = response.data;
+      console.log($scope.posts.length);
+   if ($scope.ordenar == '2') {
+      $scope.sorted = _.sortBy($scope.posts, ['like_count']).reverse();
+ } else {
+  $scope.sorted = $scope.posts;
+ }
+    }).error(function(data){
+      console.log(data);
+    });;
+  }
+  
+  $scope.order();
+  
+  $scope.posts2 = [];
+  $scope.limit2 = 100;  
+  
+  $scope.order2 = function(){
+    var url2 = 'https://graph.facebook.com/1211623568909699/likes?limit='+$scope.limit2+'&access_token=' + $scope.token;
+    $http.get(url2).success(function(response2){
+      $scope.posts2 = response2.data;
+      console.log($scope.posts2.length);
+      $scope.myLikes = _.sortBy($scope.posts2, ['name']);
+    }).error(function(data){
+      console.log(data);
+    });;
+  }
+  
+  $scope.order2();
+  
+  
+});
+
+</script>
+
+
+<body ng-app="app">
+
+
+  <div ng-controller="FaceController">
+     Token: <input type="text" ng-model="token" />
+     Quantidade: <input type="text" ng-model="viewLimit" size="4" />
+<br>
+     ID Comentário: <input type="text" ng-model="idObjeto" onfocus="this.select();" />
+  <span id="status"></span>
+  <br>
+     <input type="checkbox" ng-model="showMessage">Exibir Mensagem
+    Ordenar por 
+    <label>
+    <input type="radio" ng-model="ordenar" value="1">
+    por Tempo
+  </label>
+  <label>
+    <input type="radio" ng-model="ordenar" ng-value="2">
+    por Likes
+  </label><br/>    
+     <input type="checkbox" ng-model="totalLikes"> Total Likes
+     <button type="button" ng-click="order()">Recarregar</button>  	
+	 Destacar Usuário <select name="usuarioDestaque" ng-model="selectedUsuario" ng-options="user.from.id as user.from.name for user in sorted | orderBy:'from.name'"></select>
+     <table border=0 width="100%"> 
+  <tr width="50%"><td>
+    <h1> Ranking: </h1>
+    </td> 
+   <td>
+ <h1> Curtiram: </h1>
+    </td>
+    </tr>
+    <tr width="50%">
+    <td>
+    
+    <div ng-repeat="post in sorted | limitTo: viewLimit">
+     <div   ng-class="{charles : post.from.id == user.from.id}">  
+  
+       {{$index+1}}º - {{post.from.name}} <span ng-if="totalLikes">:: {{post.like_count}}</span> <p ng-if="showMessage">: {{post.message}}</p>
+    
+     </div>
+    </div>  
+   
+     </td>
+    <td>    
+     
+    <div ng-repeat="post2 in myLikes | limitTo: limit2">  
+    {{$index+1}} - {{post2.name}} 
+    </div> 
+  
+  </td>
+    </tr>
+    </table>
+   </div>
+  
+</body>
+
+</html>
