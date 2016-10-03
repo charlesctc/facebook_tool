@@ -40,6 +40,7 @@ angular.module("app").controller("FaceController", function($scope, $http){
   $scope.posts = [];
   $scope.limit = 20;
   $scope.viewLimit = 20;
+  $scope.linkMsg = true;
   $scope.token = 'EAACEdEose0cBALV7ZBvdmSr5ZCDtZAM3wk7wZA9f7o9LC6b5QC3JkdQYNnSXx8ZB4do3SEjn9iwmONNq6tFWTVQHzOiSpKyfMIgxtvl37ZBzqX4Q8AyAyp8LVa8yEzgtIsAbMuyW42KXzLe57jJ4HDHrfdrzj7N5kZBIPKP7Ko0uQZDZD';
   
   $scope.order = function(){
@@ -125,7 +126,12 @@ angular.module("app").controller("FaceController", function($scope, $http){
      <div   ng-class="{charles : post.from.id == selectedUsuario}">  
   
        {{$index+1}}º - <a ng-if="linkUsuario" href="https://www.facebook.com/{{post.from.id}}" target="_blank">{{post.from.name}} </a><span ng-if="!linkUsuario"}}> {{post.from.name}} </span>	   
-	   <span ng-if="totalLikes">: {{post.like_count}}</span> <p ng-if="showMessage">: {{post.message}}</p>    
+	   <span ng-if="totalLikes">: {{post.like_count}}</span> 
+	   <p ng-if="showMessage">: 
+		   <a ng-if="linkMsg" href="https://www.facebook.com/{{idObjeto}}?comment_id={{post.id}}" target="_blank">
+				{{post.message}}
+			</a>
+	   </p>    
      </div>
     </div>  
    
