@@ -92,35 +92,44 @@ angular.module("app").controller("FaceController", function($scope, $http){
   <div ng-controller="FaceController">
      Token: <input type="text" ng-model="token" onfocus="this.select();" />
      Quantidade: <input type="text" ng-model="viewLimit" size="4" onfocus="this.select();" />
-<br>
      ID Comentário: <input type="text" ng-model="idObjeto" onfocus="this.select();" />
-  <span id="status"></span>
-  <br>
-     <input type="checkbox" ng-model="showMessage">Exibir Mensagem
+<br>
+<br>
+  Exibir
+     <input type="checkbox" ng-model="showMessage">Mensagem
+	  <input type="checkbox" ng-model="totalLikes"> Total Likes
+	   <input type="checkbox" ng-model="linkUsuario"> Link Usuário
+<br>
+<br>
     Ordenar por 
     <label>
-    <input type="radio" ng-model="ordenar" value="1">
-    por Tempo
+		<input type="radio" ng-model="ordenar" value="1">por Tempo
+	</label>
+	<label>
+    <input type="radio" ng-model="ordenar" ng-value="2">por Likes
   </label>
-  <label>
-    <input type="radio" ng-model="ordenar" ng-value="2">
-    por Likes
-  </label><br/>    
-     <input type="checkbox" ng-model="totalLikes"> Total Likes
-     <button type="button" ng-click="order()">Recarregar</button>  		
-	  <input type="checkbox" ng-model="linkUsuario"> Link Usuário
-	  <br>
+<br>
+<br>  
+	 
 	 Destacar Usuário <select name="usuarioDestaque" ng-model="selectedUsuario" ng-options="user.from.id as user.from.name for user in sorted | orderBy:'from.name'"></select>
+<br>
+<br>
+     <button type="button" ng-click="order()">Recarregar</button>  	
+<br>
      <table border=0 width="100%"> 
   <tr width="50%"><td>
-    <h1> Ranking: </h1>
+		<h1> 
+			<span ng-if="ordenar==1"}}>Ordem de Criação</span>
+			<span ng-if="ordenar==2"}}>Ranking de Likes</span>
+		</h1>
+	
     </td> 
    <td>
  <h1> Curtiram: </h1>
     </td>
     </tr>
     <tr width="50%">
-    <td>
+    <td valign="top" align="justify" width="50%">
     
     <div ng-repeat="post in sorted | limitTo: viewLimit">
      <div   ng-class="{charles : post.from.id == selectedUsuario}">  
@@ -136,7 +145,7 @@ angular.module("app").controller("FaceController", function($scope, $http){
     </div>  
    
      </td>
-    <td>    
+    <td valign="top">    
      
     <div ng-repeat="post2 in myLikes | limitTo: limit2">  
     {{$index+1}} - {{post2.name}} 
