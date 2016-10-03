@@ -16,8 +16,17 @@
 <style>
 .charles {
   color: red;
-  font-weight: bold;
+  font-weight: bold;  
+ a:link {
+    color: red;
+   }
+
+  a:visited {
+	color: red;
+  }
 }
+
+
 </style>
 
 <script>
@@ -26,11 +35,12 @@ angular.module('app', []);
 angular.module("app").controller("FaceController", function($scope, $http){
   $scope.ordenar = '2';
   $scope.totalLikes = true;
+  $scope.linkUsuario = false;
   $scope.idObjeto = '1211135765625146'; 
   $scope.posts = [];
   $scope.limit = 20;
   $scope.viewLimit = 20;
-  $scope.token = 'EAACEdEose0cBACAZAolplNxqQe50teupeg3VH5wY36F2CANckz0TfUnVlL5eBszjCWSZBZA2NZBera0NMfcazwGDTCSlfMkKRlTZBYqUUsiTaabgXjTDpQZB0ZBqJoxtsW7Up80jQoQNZAAlZANyZAYSKS0LZCJCdxDvb1hI66yp9ZBp5AZDZD';
+  $scope.token = 'EAACEdEose0cBALV7ZBvdmSr5ZCDtZAM3wk7wZA9f7o9LC6b5QC3JkdQYNnSXx8ZB4do3SEjn9iwmONNq6tFWTVQHzOiSpKyfMIgxtvl37ZBzqX4Q8AyAyp8LVa8yEzgtIsAbMuyW42KXzLe57jJ4HDHrfdrzj7N5kZBIPKP7Ko0uQZDZD';
   
   $scope.order = function(){
     var url = 'https://graph.facebook.com/' + $scope.idObjeto + '/comments?fields=message,from{name},like_count';
@@ -96,7 +106,9 @@ angular.module("app").controller("FaceController", function($scope, $http){
     por Likes
   </label><br/>    
      <input type="checkbox" ng-model="totalLikes"> Total Likes
-     <button type="button" ng-click="order()">Recarregar</button>  	
+     <button type="button" ng-click="order()">Recarregar</button>  		
+	  <input type="checkbox" ng-model="linkUsuario"> Link Usuário
+	  <br>
 	 Destacar Usuário <select name="usuarioDestaque" ng-model="selectedUsuario" ng-options="user.from.id as user.from.name for user in sorted | orderBy:'from.name'"></select>
      <table border=0 width="100%"> 
   <tr width="50%"><td>
@@ -112,8 +124,8 @@ angular.module("app").controller("FaceController", function($scope, $http){
     <div ng-repeat="post in sorted | limitTo: viewLimit">
      <div   ng-class="{charles : post.from.id == selectedUsuario}">  
   
-       {{$index+1}}º - <a href="https://www.facebook.com/{{post.from.id}}" target="_blank">{{post.from.name}}</a> <span ng-if="totalLikes">:: {{post.like_count}}</span> <p ng-if="showMessage">: {{post.message}}</p>
-    
+       {{$index+1}}º - <a ng-if="linkUsuario" href="https://www.facebook.com/{{post.from.id}}" target="_blank">{{post.from.name}} </a><span ng-if="!linkUsuario"}}> {{post.from.name}} </span>	   
+	   <span ng-if="totalLikes">: {{post.like_count}}</span> <p ng-if="showMessage">: {{post.message}}</p>    
      </div>
     </div>  
    
