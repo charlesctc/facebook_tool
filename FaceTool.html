@@ -90,8 +90,8 @@ angular.module("app").controller("FaceController", function($scope, $http){
 
 
   <div ng-controller="FaceController">
-     Token: <input type="text" ng-model="token" />
-     Quantidade: <input type="text" ng-model="viewLimit" size="4" />
+     Token: <input type="text" ng-model="token" onfocus="this.select();" />
+     Quantidade: <input type="text" ng-model="viewLimit" size="4" onfocus="this.select();" />
 <br>
      ID Comentário: <input type="text" ng-model="idObjeto" onfocus="this.select();" />
   <span id="status"></span>
