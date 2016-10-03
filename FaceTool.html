@@ -110,9 +110,9 @@ angular.module("app").controller("FaceController", function($scope, $http){
     <td>
     
     <div ng-repeat="post in sorted | limitTo: viewLimit">
-     <div   ng-class="{charles : post.from.id == user.from.id}">  
+     <div   ng-class="{charles : post.from.id == selectedUsuario}">  
   
-       {{$index+1}}º - {{post.from.name}} <span ng-if="totalLikes">:: {{post.like_count}}</span> <p ng-if="showMessage">: {{post.message}}</p>
+       {{$index+1}}º - <a href="https://www.facebook.com/{{post.from.id}}" target="_blank">{{post.from.name}}</a> <span ng-if="totalLikes">:: {{post.like_count}}</span> <p ng-if="showMessage">: {{post.message}}</p>
     
      </div>
     </div>  
