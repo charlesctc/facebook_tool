@@ -14,17 +14,19 @@
 
 
 <style>
-.charles {
+.destaque {
   color: red;
   font-weight: bold;  
- a:link {
-    color: red;
-   }
+  
+}
 
-  a:visited {
+.destaque a:visited {
 	color: red;
   }
-}
+  
+  .destaque a:hover {
+	color: red;
+  }
 
 
 </style>
@@ -41,22 +43,20 @@ angular.module("app").controller("FaceController", function($scope, $http){
   $scope.limit = 20;
   $scope.viewLimit = 20;
   $scope.linkMsg = true;
-  $scope.token = 'EAACEdEose0cBALV7ZBvdmSr5ZCDtZAM3wk7wZA9f7o9LC6b5QC3JkdQYNnSXx8ZB4do3SEjn9iwmONNq6tFWTVQHzOiSpKyfMIgxtvl37ZBzqX4Q8AyAyp8LVa8yEzgtIsAbMuyW42KXzLe57jJ4HDHrfdrzj7N5kZBIPKP7Ko0uQZDZD';
+  $scope.token = 'EAACEdEose0cBAICoifDkMjyakNlenTxOUiWM5esKWWV1lTLa6eiDlxbY6tyZAi4ZAfqsL2V1Cmp2jPNdNficFOWZBRzW2rcVEEjRlqI2eTqray905YhDchQOvILByr3dKEkRnuIJxiPnFjz8H2GLufZBGjMiv2lD8QLVFCVSKwZDZD';
   
   $scope.order = function(){
-    var url = 'https://graph.facebook.com/' + $scope.idObjeto + '/comments?fields=message,from{name},like_count';
- if ($scope.ordenar == '1') {
-  url = url + '&order=chronological';
- }
- url = url + '&limit=5000&access_token=' + $scope.token;
+    var url = 'https://graph.facebook.com/' + $scope.idObjeto + '/comments?fields=message,from{name},like_count,created_time';
+	url = url + '&limit=5000&access_token=' + $scope.token;
+	console.log(url);
     $http.get(url).success(function(response){
       $scope.posts = response.data;
       console.log($scope.posts.length);
    if ($scope.ordenar == '2') {
       $scope.sorted = _.sortBy($scope.posts, ['like_count']).reverse();
- } else {
-  $scope.sorted = $scope.posts;
- }
+	 } else {
+	  $scope.sorted = _.sortBy($scope.posts, ['created_time']);
+	 }
     }).error(function(data){
       console.log(data);
     });;
@@ -65,20 +65,25 @@ angular.module("app").controller("FaceController", function($scope, $http){
   $scope.order();
   
   $scope.posts2 = [];
-  $scope.limit2 = 100;  
+  $scope.limit2 = 100; 
   
-  $scope.order2 = function(){
-    var url2 = 'https://graph.facebook.com/1211623568909699/likes?limit='+$scope.limit2+'&access_token=' + $scope.token;
-    $http.get(url2).success(function(response2){
-      $scope.posts2 = response2.data;
-      console.log($scope.posts2.length);
-      $scope.myLikes = _.sortBy($scope.posts2, ['name']);
-    }).error(function(data){
-      console.log(data);
-    });;
+  $scope.order2 = function(idPost){
+  
+  if (idPost != null) {
+		var url2 = 'https://graph.facebook.com/' + idPost + '/likes?limit='+$scope.limit2+'&access_token=' + $scope.token;
+		console.log(url2);
+		$http.get(url2).success(function(response2){
+		$scope.posts2 = response2.data;
+		console.log($scope.posts2.length);
+		$scope.myLikes = _.sortBy($scope.posts2, ['name']);
+
+		}).error(function(data){
+		  console.log(data);
+		});;
+	  }
   }
   
-  $scope.order2();
+  $scope.order2($scope.idPost);
   
   
 });
@@ -103,7 +108,7 @@ angular.module("app").controller("FaceController", function($scope, $http){
 <br>
     Ordenar por 
     <label>
-		<input type="radio" ng-model="ordenar" value="1">por Tempo
+		<input type="radio" ng-model="ordenar" ng-value="1">por Tempo
 	</label>
 	<label>
     <input type="radio" ng-model="ordenar" ng-value="2">por Likes
@@ -132,10 +137,10 @@ angular.module("app").controller("FaceController", function($scope, $http){
     <td valign="top" align="justify" width="50%">
     
     <div ng-repeat="post in sorted | limitTo: viewLimit">
-     <div   ng-class="{charles : post.from.id == selectedUsuario}">  
+     <div   ng-class="{destaque : post.from.id == selectedUsuario}">  
   
        {{$index+1}}º - <a ng-if="linkUsuario" href="https://www.facebook.com/{{post.from.id}}" target="_blank">{{post.from.name}} </a><span ng-if="!linkUsuario"}}> {{post.from.name}} </span>	   
-	   <span ng-if="totalLikes">: {{post.like_count}}</span> 
+	    <a href="#" ng-if="totalLikes" ng-click="order2(post.id)"> {{post.like_count}}</a>
 	   <p ng-if="showMessage">: 
 		   <a ng-if="linkMsg" href="https://www.facebook.com/{{idObjeto}}?comment_id={{post.id}}" target="_blank">
 				{{post.message}}
