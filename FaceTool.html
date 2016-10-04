@@ -43,7 +43,7 @@ angular.module("app").controller("FaceController", function($scope, $http){
   $scope.limit = 20;
   $scope.viewLimit = 20;
   $scope.linkMsg = true;
-  $scope.token = 'EAACEdEose0cBAICoifDkMjyakNlenTxOUiWM5esKWWV1lTLa6eiDlxbY6tyZAi4ZAfqsL2V1Cmp2jPNdNficFOWZBRzW2rcVEEjRlqI2eTqray905YhDchQOvILByr3dKEkRnuIJxiPnFjz8H2GLufZBGjMiv2lD8QLVFCVSKwZDZD';
+  $scope.token = 'EAACEdEose0cBALQZA8JZCujgl7ZCOWyx6ZASBhDRRTsjpGVB4JuJA3Y70mXugm8XG7ZCFSLKgPq8iuqTUgurDDeSwnuxiavWDIMePEy7LtXZAPApBZB8gGgJMoVpZAa6rp4jbKDNpoHL7dDePJqNY2uQFYSoQwTwKkIYEi4QssRVDwZDZD';
   
   $scope.order = function(){
     var url = 'https://graph.facebook.com/' + $scope.idObjeto + '/comments?fields=message,from{name},like_count,created_time';
@@ -117,6 +117,7 @@ angular.module("app").controller("FaceController", function($scope, $http){
 <br>  
 	 
 	 Destacar Usuário <select name="usuarioDestaque" ng-model="selectedUsuario" ng-options="user.from.id as user.from.name for user in sorted | orderBy:'from.name'"></select>
+	 Filtrar Comentários: <input type="text" ng-model="filtroComentario" onfocus="this.select();" />
 <br>
 <br>
      <button type="button" ng-click="order()">Recarregar</button>  	
@@ -136,7 +137,7 @@ angular.module("app").controller("FaceController", function($scope, $http){
     <tr width="50%">
     <td valign="top" align="justify" width="50%">
     
-    <div ng-repeat="post in sorted | limitTo: viewLimit">
+    <div ng-repeat="post in sorted | limitTo: viewLimit | filter: filtroComentario ">
      <div   ng-class="{destaque : post.from.id == selectedUsuario}">  
   
        {{$index+1}}º - <a ng-if="linkUsuario" href="https://www.facebook.com/{{post.from.id}}" target="_blank">{{post.from.name}} </a><span ng-if="!linkUsuario"}}> {{post.from.name}} </span>	   
