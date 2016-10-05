@@ -14,20 +14,24 @@
 
 
 <style>
-.destaque {
-  color: red;
-  font-weight: bold;  
-  
-}
+	.destaque {
+		color: red;
+		font-weight: bold;  
+	}
 
-.destaque a:visited {
-	color: red;
-  }
-  
-  .destaque a:hover {
-	color: red;
-  }
+	.destaque a:visited {
+		color: red;
+	}
 
+	.destaque a:hover {
+		color: red;
+	}
+
+	.galeria {
+		float:left;
+		display:block;
+		width: 100px;
+	}
 
 </style>
 
@@ -36,6 +40,8 @@
 angular.module('app', []);
 angular.module("app").controller("FaceController", function($scope, $http){
   $scope.ordenar = '2';
+  $scope.clientSecret = '79cb9c39d470f5faf024de6dc13d6f4a';
+  $scope.clientId = '479776352113968';
   $scope.totalLikes = true;
   $scope.linkUsuario = false;
   $scope.idObjeto = '1211135765625146'; 
@@ -43,7 +49,7 @@ angular.module("app").controller("FaceController", function($scope, $http){
   $scope.limit = 20;
   $scope.viewLimit = 20;
   $scope.linkMsg = true;
-  $scope.token = 'EAACEdEose0cBALViJJNJbmeiuhbfiVw0xxYZBp9F7YchPd8FEN7ZAFLI5M7EpX0Qn0AmZBRpv4aZCpKUZAZCR56VNIrEZCR1PN3yMGM9ZAGtmrO6BrtC1ODWMeK1EqBUZAkes7lBZBeojZA8qoibZACHscTiI9ZBsF2uD14fUkbqWIUlPKgZDZD';
+  $scope.token = 'EAACEdEose0cBAMCbP5foejrh75bZAKVez7QauBKeBsINB3GK0giARovQzWb8NNt2aOVV5h5JtHaRZAUzVdriRoFNWz8ZAgDpSwbUOQuPN1c1v8MAMvkrVUowS2YxTfZCYNVZAZAJW1bPDRFfOZCnZAkBz1RsP540K2rwhWjOMtID4gZDZD';
   
   $scope.order = function(){
 	if ($scope.ordenar == '2') {
@@ -56,6 +62,7 @@ angular.module("app").controller("FaceController", function($scope, $http){
   $scope.download = function (){
     var url = 'https://graph.facebook.com/' + $scope.idObjeto + '/comments?fields=message,from{name},like_count,created_time';
 	url = url + '&limit=5000&access_token=' + $scope.token;
+	url = url + '&client_id=' + $scope.clientId + '&client_secret=' + $scope.clientSecret + '&grant_type=fb_exchange_token';
 	console.log(url);
     $http.get(url).success(function(response){
       $scope.posts = response.data;
@@ -76,6 +83,7 @@ angular.module("app").controller("FaceController", function($scope, $http){
   
   if (idPost != null) {
 		var url2 = 'https://graph.facebook.com/' + idPost + '/likes?limit='+$scope.limit2+'&access_token=' + $scope.token;
+	    url2 = url2 + '&client_id=' + $scope.clientId + '&client_secret=' + $scope.clientSecret + '&grant_type=fb_exchange_token';
 		console.log(url2);
 		$http.get(url2).success(function(response2){
 		$scope.posts2 = response2.data;
@@ -158,8 +166,13 @@ angular.module("app").controller("FaceController", function($scope, $http){
      </td>
     <td valign="top">    
      
-    <div ng-repeat="post2 in myLikes | limitTo: limit2">  
-    <img ng-src="https://graph.facebook.com/{{post2.id}}/picture?access_token={{token}}"></img>	{{$index+1}} - {{post2.name}} 	
+    <div class="galeria" ng-repeat="post2 in myLikes | limitTo: limit2">  
+	{{$index+1}}
+	<a href="https://www.facebook.com/{{post2.id}}" target="_blank">
+    <img ng-ref ng-src="https://graph.facebook.com/{{post2.id}}/picture?access_token={{token}}"></img>	 
+	</a>
+	<br>
+	{{post2.name}} 	
     </div> 
   
   </td>
