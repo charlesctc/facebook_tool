@@ -34,12 +34,30 @@
 		width: 100px;
 	}
 	
+	.tdRanking {
+		width: 20%;
+	}
+	
+	.tdLikes {
+		width: 80%;
+	}	
+	
 	.fundo1 {
 		background-color: #d1d1e0;
 	}
 	
 	.fundo2 {
 		background-color: #f0f0f5;
+	}
+	
+	.divRanking {
+		overflow: scroll;
+		height: 400px;
+	}	
+	.divLikes {
+		overflow: scroll;
+		height: 400px;
+		display: block;
 	}
 
 </style>
@@ -57,7 +75,7 @@ angular.module("app").controller("FaceController", function($scope, $http){
   $scope.limit = 20;
   $scope.viewLimit = 20;
   $scope.linkMsg = true;
-  $scope.token = 'EAACEdEose0cBAMCbP5foejrh75bZAKVez7QauBKeBsINB3GK0giARovQzWb8NNt2aOVV5h5JtHaRZAUzVdriRoFNWz8ZAgDpSwbUOQuPN1c1v8MAMvkrVUowS2YxTfZCYNVZAZAJW1bPDRFfOZCnZAkBz1RsP540K2rwhWjOMtID4gZDZD';
+  $scope.token = 'EAACEdEose0cBAHGFSaDzFgKP1YrPJxoW1XSlZC612JrJ8ZBGkg0U7XlL5zZBlCVobQWefuoyE8AgssXtte7sZCgoRjbVFLdD2vytyz5s8sUDei1WfgLE3MVQlUZBXdc6UThGo3asO0i40HsU6rUMoMS24u4Xv2PbLkThQFwrFKQZDZD';
   
   $scope.order = function(){
 	if ($scope.ordenar == '2') {
@@ -115,17 +133,17 @@ angular.module("app").controller("FaceController", function($scope, $http){
 <body ng-app="app">
 <div ng-controller="FaceController">
 <table border="0" width="100%" class="fundo2"> 
- <tr  width="50%"><td colspan="2">
+ <tr ><td colspan="2">
      Token: <input type="text" ng-model="token" onfocus="this.select();" />
      Quantidade: <input type="text" ng-model="viewLimit" size="4" onfocus="this.select();" />
      ID Comentário: <input type="text" ng-model="idObjeto" onfocus="this.select();" />
 </td></tr>
- <tr width="50%"><td colspan="2">
+ <tr><td colspan="2">
   Exibir
      <input type="checkbox" ng-model="showMessage">Mensagem
 	  <input type="checkbox" ng-model="totalLikes"> Total Likes
 </td></tr>
- <tr width="50%"><td colspan="2">
+ <tr><td colspan="2">
     Ordenar por 
     <label>
 		<input type="radio" ng-model="ordenar" ng-change="order()" ng-value="1">por Tempo
@@ -134,56 +152,63 @@ angular.module("app").controller("FaceController", function($scope, $http){
     <input type="radio" ng-model="ordenar" ng-change="order()" ng-value="2">por Likes
   </label>
 </td></tr>
- <tr width="50%"><td colspan="2">
+ <tr><td colspan="2">
 	 
 	 Destacar Usuário <select name="usuarioDestaque" ng-model="selectedUsuario" ng-options="user.from.id as user.from.name for user in sorted | orderBy:'from.name'"></select>
 	 Filtrar Comentários: <input type="text" ng-model="filtroComentario" onfocus="this.select();" />
 </td></tr>
- <tr width="50%"><td colspan="2">
+ <tr><td colspan="2">
      <button type="button" ng-click="download()">Recarregar</button>  	
 </td></tr>
- <tr class="fundo2" width="50%"><td>
+ <tr class="fundo2">
+	<td class="tdRanking">
 		<h1> 
 			<span ng-if="ordenar==1"}}>Ordem de Criação</span>
 			<span ng-if="ordenar==2"}}>Ranking de Likes</span>
 		</h1>
 	
     </td> 
-   <td>
+	<td class="tdLikes">
  <h1> Curtiram: </h1>
     </td>
     </tr>
-    <tr width="50%">
-    <td valign="top" align="justify" width="50%">
+    <tr>
+    <td valign="top" align="justify">
+	<div class="divRanking">
     
-    <div ng-class-odd="'fundo1'" ng-class-even="'fundo2'"  ng-repeat="post in sorted | limitTo: viewLimit | filter: filtroComentario ">
-	
-     <div   ng-class="{destaque : post.from.id == selectedUsuario}">    
-       {{$index+1}}º - 
-	   <a href="https://www.facebook.com/{{post.from.id}}" target="_blank">
-		<img ng-ref ng-src="https://graph.facebook.com/{{post.from.id}}/picture?access_token={{token}}"></img>
-	   </a>
-	 {{post.from.name}}
-	    <a href="#" ng-if="totalLikes" ng-click="order2(post.id)"> {{post.like_count}}</a>
-	   <p ng-if="showMessage">: 
-		   <a ng-if="linkMsg" href="https://www.facebook.com/{{idObjeto}}?comment_id={{post.id}}" target="_blank">
-				{{post.message}}
-			</a>
-	   </p>   
-     </div>
+		<div ng-class-odd="'fundo1'" ng-class-even="'fundo2'"  ng-repeat="post in sorted | limitTo: viewLimit | filter: filtroComentario ">
+		
+		 <div  ng-class="{destaque : post.from.id == selectedUsuario}">    
+		   {{$index+1}}º - 
+		   <a href="https://www.facebook.com/{{post.from.id}}" target="_blank">
+			<img ng-ref ng-src="https://graph.facebook.com/{{post.from.id}}/picture?access_token={{token}}"></img>
+		   </a>
+		 {{post.from.name}}
+			<a href="#" ng-if="totalLikes" ng-click="order2(post.id)"> {{post.like_count}}</a>
+		   <p ng-if="showMessage">: 
+			   <a ng-if="linkMsg" href="https://www.facebook.com/{{idObjeto}}?comment_id={{post.id}}" target="_blank">
+					{{post.message}}
+				</a>
+		   </p>   
+		 </div>
+		</div>  
+		
     </div>  
    
      </td>
     <td valign="top">    
+	
+	<div class="divLikes">
      
-    <div class="galeria" ng-repeat="post2 in myLikes | limitTo: limit2">  
-	{{$index+1}}
-	<a href="https://www.facebook.com/{{post2.id}}" target="_blank">
-		<img ng-ref ng-src="https://graph.facebook.com/{{post2.id}}/picture?access_token={{token}}"></img>	 
-	</a>
-	<br>
-	{{post2.name}} 	
-    </div> 
+		<div class="galeria" ng-repeat="post2 in myLikes | limitTo: limit2">  
+		{{$index+1}}
+		<a href="https://www.facebook.com/{{post2.id}}" target="_blank">
+			<img ng-ref ng-src="https://graph.facebook.com/{{post2.id}}/picture?access_token={{token}}"></img>	 
+		</a>
+		<br>
+		{{post2.name}} 	
+		</div> 
+	</div> 
   
   </td>
     </tr>
